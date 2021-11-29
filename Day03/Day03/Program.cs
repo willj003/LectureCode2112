@@ -94,7 +94,24 @@ namespace Day03
                 Console.WriteLine("Sorry folks. The machine is broken.");
             else
                 Console.WriteLine("That's not on the menu. Go to In-n-Out.");
+
+            DropStudent(pg2);
             #endregion
+        }
+
+        /// <summary>
+        /// Gets the student's name from the user and attempts to remove from the dictionary.
+        /// </summary>
+        /// <param name="pg2">The dictionary for the course.</param>
+        private static void DropStudent(Dictionary<string, double> pg2)
+        {
+            Console.Write("Please enter the student's name: ");
+            string student = Console.ReadLine();
+            bool wasDropped = pg2.Remove(student);
+            if(wasDropped)
+                Console.WriteLine($"{student} was dropped.");
+            else
+                Console.WriteLine($"{student} was not in the course.");
         }
 
         private static void PrintGrades(Dictionary<string, double> grades)
