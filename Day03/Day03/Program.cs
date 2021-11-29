@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 
@@ -79,7 +80,7 @@ namespace Day03
             //Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
             //Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
             Console.WriteLine("\n______\"Dollar\" Burger Menu_________");
-            foreach (KeyValuePair<string,float> item in menu)
+            foreach (KeyValuePair<string, float> item in menu)
             {
                 Console.WriteLine($"{item.Value,7:C2} {item.Key} ");
             }
@@ -97,6 +98,52 @@ namespace Day03
 
             DropStudent(pg2);
             #endregion
+
+            #region Checking for keys
+            //2 ways:
+            //1) ContainsKey
+            string menuItem = "Chicken Nuggets";
+            if (menu.ContainsKey(menuItem))
+            {
+                float price = menu[menuItem];
+                Console.WriteLine($"The price of our {menuItem} is {price:C2}.");
+            }
+            else
+                Console.WriteLine($"{menuItem} is not on the menu.");
+
+            //2) TryGetValue
+            menuItem = "Currly fries";
+            if (menu.TryGetValue(menuItem, out float itemPrice))
+            {
+                Console.WriteLine($"The price of our {menuItem} is {itemPrice:C2}.");
+                //menu.Add(menuItem, 1.75F);//will throw an exception
+                menu[menuItem] = itemPrice + 0.25F;//overwrite the existing value
+            }
+            else
+            {
+                Console.WriteLine($"{menuItem} is not on the menu.");
+                menu.Add(menuItem, 1.50F);
+            }
+
+            CurveStudent(pg2);
+            #endregion
+        }
+
+        private static void CurveStudent(Dictionary<string, double> pg2)
+        {
+            Console.Write("Please enter the student's name: ");
+            string student = Console.ReadLine();
+            if(pg2.TryGetValue(student, out double grade))
+            {
+                grade += 5;
+                if (grade > 100) grade = 100;
+                pg2[student] = grade;//overwrite the value
+                Console.WriteLine($"{student}'s grade was curved to {grade:N2}.");
+            }
+            else
+            {
+                Console.WriteLine($"{student} is not in the course. Curving FAILED!");
+            }
         }
 
         /// <summary>
@@ -108,7 +155,7 @@ namespace Day03
             Console.Write("Please enter the student's name: ");
             string student = Console.ReadLine();
             bool wasDropped = pg2.Remove(student);
-            if(wasDropped)
+            if (wasDropped)
                 Console.WriteLine($"{student} was dropped.");
             else
                 Console.WriteLine($"{student} was not in the course.");
@@ -117,7 +164,7 @@ namespace Day03
         private static void PrintGrades(Dictionary<string, double> grades)
         {
             Console.WriteLine("----------------Grades--------------");
-            foreach (KeyValuePair<string,double> student in grades)
+            foreach (KeyValuePair<string, double> student in grades)
             {
                 Console.Write($"{student.Key,-10}");
                 if (student.Value < 59.5)
