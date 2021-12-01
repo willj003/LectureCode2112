@@ -73,6 +73,9 @@ namespace Day04
             #endregion
 
             #region Serializing
+
+            WriteJson(filePath);
+
             List<Superhero> heroes = new List<Superhero>();
             heroes.Add(new Superhero() { Name = "Batman", SecretIdentity = "Bruce Wayne", Powers = SuperPowers.Money });
             heroes.Add(new Superhero() { Name = "Superman", SecretIdentity = "Clark Kent", Powers = SuperPowers.Flight });
@@ -92,6 +95,49 @@ namespace Day04
                 }
             }
             #endregion
+
+            #region Deserializing
+            //filePath = "steev.json";
+            if (File.Exists(filePath))
+            {
+                string heroText = File.ReadAllText(filePath);
+                List<Superhero> justice;
+
+                try
+                {
+                    justice = JsonConvert.DeserializeObject<List<Superhero>>(heroText);
+                    Console.WriteLine("------------Justice League----------");
+                    foreach (var super in justice)
+                    {
+                        Console.WriteLine($"I am {super.Name} and I'm good at {super.Powers}!");
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("The file is incorrect!");
+                }
+            }
+            #endregion
+        }
+
+        private static void WriteJson(string filePath)
+        {
+            List<int> nums = new List<int>() { 5, 4, 3, 2, 1 };
+
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                using (JsonTextWriter jsonWriter = new JsonTextWriter(sw))
+                {
+                    jsonWriter.Formatting = Formatting.Indented;
+                    //serialize the data
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Serialize(jsonWriter, nums);
+                }
+            }
+
+            //OR
+            string jsonText = JsonConvert.SerializeObject(nums,Formatting.Indented);
+            File.WriteAllText(filePath, jsonText);
         }
 
         private static void ReadData(string filePath)
