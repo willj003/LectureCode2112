@@ -117,7 +117,34 @@ namespace Day04
                     Console.WriteLine("The file is incorrect!");
                 }
             }
+
+            WriteJson(filePath);
+            List<int> myNums = ReadJson(filePath);
+            Console.WriteLine("------------Numbers----------");
+            foreach (var num in myNums)
+            {
+                Console.WriteLine(num);
+            }
             #endregion
+        }
+
+        private static List<int> ReadJson(string filePath)
+        {
+            List<int> numbers = null;
+            if (File.Exists(filePath))
+            {
+                string heroText = File.ReadAllText(filePath);
+
+                try
+                {
+                    numbers = JsonConvert.DeserializeObject<List<int>>(heroText);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("The file is incorrect!");
+                }
+            }
+            return numbers;
         }
 
         private static void WriteJson(string filePath)
