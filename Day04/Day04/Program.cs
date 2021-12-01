@@ -1,9 +1,20 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace Day04
 {
+    enum SuperPowers
+    {
+        Flight, Strength, Speed, Money, Intelligence, Acrobatics, Swimming
+    }
+    class Superhero
+    {
+        public string Name { get; set; }
+        public string SecretIdentity { get; set; }
+        public SuperPowers Powers { get; set; }
+    }
     class Program
     {
         static void Main(string[] args)
@@ -57,7 +68,52 @@ namespace Day04
                     Console.WriteLine(data[i]);
                 }
             }
+
+            ReadData(filePath);
             #endregion
+
+            #region Serializing
+            List<Superhero> heroes = new List<Superhero>();
+            heroes.Add(new Superhero() { Name = "Batman", SecretIdentity = "Bruce Wayne", Powers = SuperPowers.Money });
+            heroes.Add(new Superhero() { Name = "Superman", SecretIdentity = "Clark Kent", Powers = SuperPowers.Flight });
+            heroes.Add(new Superhero() { Name = "Wonder Woman", SecretIdentity = "Diana Prince", Powers = SuperPowers.Strength });
+            heroes.Add(new Superhero() { Name = "Flash", SecretIdentity = "Barry Allen", Powers = SuperPowers.Speed });
+            heroes.Add(new Superhero() { Name = "Aquaman", SecretIdentity = "Arther Curry", Powers = SuperPowers.Swimming });
+
+            filePath = Path.ChangeExtension(filePath, ".json");
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                using (JsonTextWriter jsonWriter = new JsonTextWriter(sw))
+                {
+                    jsonWriter.Formatting = Formatting.Indented;
+                    //serialize the data
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Serialize(jsonWriter, heroes);
+                }
+            }
+            #endregion
+        }
+
+        private static void ReadData(string filePath)
+        {
+            char delimiter = '%';
+            Console.WriteLine("----------ReadData---------");
+            string fileData = File.ReadAllText(filePath);//opens,reads,closes the file
+            string[] data = fileData.Split(delimiter);
+
+            List<int> numbers = new List<int>();
+            for (int i = 0; i < data.Length; i++)
+            {
+                if(int.TryParse(data[i], out int number))
+                {
+                    numbers.Add(number);
+                }
+            }
+
+            foreach (var number in numbers)
+            {
+                Console.WriteLine(number);
+            }
         }
 
         private static void WriteData(string filePath)
